@@ -125,6 +125,27 @@ a:focus-visible,
   gap: 18px;
 }
 
+.blog-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.blog-icon {
+  width: 158px;
+  height: 158px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.blog-row .button {
+  font-size: 0.96rem;
+  padding: 10px 15px;
+}
+
 .work-icon {
   width: 148px;
   height: 148px;
@@ -556,6 +577,16 @@ p {
   .hero-work {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .blog-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .blog-icon {
+    width: 96px;
+    height: 96px;
   }
 
   .avatar {
