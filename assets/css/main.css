@@ -157,6 +157,14 @@ h1 {
   margin-bottom: 14px;
 }
 
+.hero-intro-title {
+  font-size: clamp(1.7rem, 2.7vw, 2.45rem);
+}
+
+.hero-work .hero-intro-title {
+  white-space: nowrap;
+}
+
 h2 {
   font-size: clamp(1.22rem, 2.2vw, 1.7rem);
   margin-top: 34px;
@@ -530,6 +538,10 @@ p {
 
   h1 {
     font-size: clamp(1.85rem, 8vw, 2.45rem);
+  }
+
+  .hero-work .hero-intro-title {
+    white-space: normal;
   }
 
   .card {
