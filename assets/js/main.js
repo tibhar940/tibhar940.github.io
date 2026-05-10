@@ -1,4 +1,114 @@
 (function () {
+  var THEME_STORAGE_KEY = "theme";
+
+  function isDarkTheme() {
+    return document.documentElement.dataset.theme === "dark";
+  }
+
+  function applyTheme(dark) {
+    if (dark) {
+      document.documentElement.dataset.theme = "dark";
+    } else {
+      delete document.documentElement.dataset.theme;
+    }
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, dark ? "dark" : "light");
+    } catch (e) {}
+  }
+
+  function syncThemeToggle(button) {
+    if (!button) return;
+    var dark = isDarkTheme();
+    button.setAttribute("aria-pressed", dark ? "true" : "false");
+    button.setAttribute("aria-label", dark ? "Go to light theme" : "Go to dark theme");
+    button.textContent = dark ? "Go Light" : "Go Dark";
+  }
+
+  var themeToggle = document.querySelector("[data-theme-toggle]");
+  if (themeToggle) {
+    syncThemeToggle(themeToggle);
+    themeToggle.addEventListener("click", function () {
+      applyTheme(!isDarkTheme());
+      syncThemeToggle(themeToggle);
+    });
+  }
+
+  var achievementsCarousel = document.querySelector("[data-achievements-carousel]");
+  if (achievementsCarousel) {
+    var track = achievementsCarousel.querySelector("[data-carousel-track]");
+    var carouselViewport = achievementsCarousel.querySelector(".carousel-viewport");
+    var slides = achievementsCarousel.querySelectorAll("[data-carousel-slide]");
+    var prevBtn = achievementsCarousel.querySelector("[data-carousel-prev]");
+    var nextBtn = achievementsCarousel.querySelector("[data-carousel-next]");
+    var dotButtons = achievementsCarousel.querySelectorAll("[data-carousel-dot]");
+    var liveRegion = achievementsCarousel.querySelector("[data-carousel-live]");
+    var total = slides.length;
+    var index = 0;
+
+    function slideTitle(slideEl) {
+      var heading = slideEl.querySelector("h3");
+      return heading ? heading.textContent.trim() : "Slide";
+    }
+
+    function go(to) {
+      index = ((to % total) + total) % total;
+      if (track) {
+        track.style.transform = "translateX(-" + index * 100 + "%)";
+      }
+      if (carouselViewport) {
+        carouselViewport.scrollTop = 0;
+      }
+      slides.forEach(function (slideEl, i) {
+        var hidden = i !== index;
+        slideEl.setAttribute("aria-hidden", hidden ? "true" : "false");
+        slideEl.setAttribute(
+          "aria-label",
+          slideTitle(slideEl) + ", slide " + (i + 1) + " of " + total
+        );
+      });
+      dotButtons.forEach(function (dot) {
+        var dotIdx = Number(dot.getAttribute("data-carousel-index"));
+        var on = dotIdx === index;
+        dot.setAttribute("aria-selected", on ? "true" : "false");
+        if (on) {
+          dot.setAttribute("aria-current", "true");
+        } else {
+          dot.removeAttribute("aria-current");
+        }
+      });
+      if (liveRegion) {
+        liveRegion.textContent =
+          "Slide " + (index + 1) + " of " + total + ": " + slideTitle(slides[index]);
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function () {
+        go(index - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function () {
+        go(index + 1);
+      });
+    }
+    dotButtons.forEach(function (dot) {
+      dot.addEventListener("click", function () {
+        go(Number(dot.getAttribute("data-carousel-index")));
+      });
+    });
+    achievementsCarousel.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        go(index - 1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        go(index + 1);
+      }
+    });
+    go(0);
+  }
+
   var config = window.SITE_CONFIG || {};
   var socialClassMap = {
     telegram: "social-link--telegram",
@@ -161,6 +271,7 @@
   }
 
   function renderCubes(container, count, variant) {
+    if (!container) return;
     container.innerHTML = "";
     for (var i = 0; i < count; i++) {
       var cube = document.createElement("span");
@@ -180,6 +291,42 @@
     var ratioNode = document.querySelector("[data-balance-ratio]");
     var fallbackNode = document.querySelector("[data-balance-fallback]");
 
+    function applyBalanceFromCounts(workChars, lifeChars, fromSnapshot) {
+      var totalChars = Math.max(1, workChars + lifeChars);
+      var totalCubes = 220;
+      var workCubes = Math.max(8, Math.round((workChars / totalChars) * totalCubes));
+      var lifeCubes = Math.max(8, totalCubes - workCubes);
+
+      renderCubes(workField, workCubes, "work");
+      renderCubes(lifeField, lifeCubes, "life");
+
+      if (workMeta) {
+        workMeta.textContent = "Characters: " + workChars.toLocaleString();
+      }
+      if (lifeMeta) {
+        lifeMeta.textContent = "Characters: " + lifeChars.toLocaleString();
+      }
+      if (ratioNode) {
+        var line =
+          "Work/Life ratio by text volume: " +
+          (workChars / totalChars * 100).toFixed(1) +
+          "% / " +
+          (lifeChars / totalChars * 100).toFixed(1) +
+          "%";
+        if (fromSnapshot) {
+          line += " (embedded snapshot — use HTTP server for live counts)";
+        }
+        ratioNode.textContent = line;
+      }
+      if (fallbackNode) {
+        fallbackNode.hidden = !fromSnapshot;
+        if (fromSnapshot) {
+          fallbackNode.textContent =
+            "Fetch to work.html / life.html is blocked in this context (common with file://). Showing cubes and ratio from an embedded character snapshot in site.config.js.";
+        }
+      }
+    }
+
     Promise.all([fetch("./work.html"), fetch("./life.html")])
       .then(function (responses) {
         return Promise.all(
@@ -192,37 +339,19 @@
         );
       })
       .then(function (pages) {
-        var workChars = extractVisibleChars(pages[0]);
-        var lifeChars = extractVisibleChars(pages[1]);
-        var totalChars = Math.max(1, workChars + lifeChars);
-        var totalCubes = 220;
-        var workCubes = Math.max(8, Math.round((workChars / totalChars) * totalCubes));
-        var lifeCubes = Math.max(8, totalCubes - workCubes);
-
-        renderCubes(workField, workCubes, "work");
-        renderCubes(lifeField, lifeCubes, "life");
-
-        if (workMeta) {
-          workMeta.textContent = "Characters: " + workChars.toLocaleString();
-        }
-        if (lifeMeta) {
-          lifeMeta.textContent = "Characters: " + lifeChars.toLocaleString();
-        }
-        if (ratioNode) {
-          ratioNode.textContent =
-            "Work/Life ratio by text volume: " +
-            (workChars / totalChars * 100).toFixed(1) +
-            "% / " +
-            (lifeChars / totalChars * 100).toFixed(1) +
-            "%";
-        }
+        applyBalanceFromCounts(extractVisibleChars(pages[0]), extractVisibleChars(pages[1]), false);
       })
       .catch(function () {
-        if (fallbackNode) {
-          fallbackNode.hidden = false;
-        }
-        if (ratioNode) {
-          ratioNode.textContent = "Ratio unavailable in current context.";
+        var snap = config.balanceCharCounts;
+        if (snap && typeof snap.work === "number" && typeof snap.life === "number") {
+          applyBalanceFromCounts(snap.work, snap.life, true);
+        } else {
+          if (fallbackNode) {
+            fallbackNode.hidden = false;
+          }
+          if (ratioNode) {
+            ratioNode.textContent = "Ratio unavailable in current context.";
+          }
         }
       });
   }

@@ -2,6 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Professional experience, stack, skills, and CV." />
     <meta property="og:title" content="Work | Aleksei Samoilov" />
@@ -14,11 +21,16 @@
     <main class="container">
       <header class="site-header">
         <div class="brand" data-owner-name>Aleksei Samoilov</div>
-        <nav class="nav" aria-label="Main navigation">
-          <a href="./life.html">Life</a>
-          <a class="active" href="./work.html">Work</a>
-          <a href="./balance.html" aria-label="Balance easter egg">Balance</a>
-        </nav>
+        <div class="site-header-end">
+          <nav class="nav" aria-label="Main navigation">
+            <a class="active" href="./work.html">Work</a>
+            <a href="./life.html">Life</a>
+            <a href="./balance.html" aria-label="Balance easter egg">Balance</a>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Go to dark theme">
+            Go Dark
+          </button>
+        </div>
       </header>
 
       <section class="hero card hero-work">
@@ -153,11 +165,203 @@
         </div>
       </section>
 
+      <section aria-labelledby="achievements-heading">
+        <h2 id="achievements-heading">Key achievements</h2>
+        <p class="muted">
+          One slide per employer (roles inside). Mentoring and teaching share one slide, split by organization.
+        </p>
+        <div
+          class="card achievements-carousel"
+          data-achievements-carousel
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Key achievements by company"
+          tabindex="0"
+        >
+          <div class="carousel-viewport">
+            <div class="carousel-track" data-carousel-track>
+              <div
+                class="carousel-slide"
+                role="group"
+                aria-roledescription="slide"
+                aria-hidden="false"
+                data-carousel-slide
+              >
+                <h3>Exness</h3>
+                <p class="muted carousel-slide-tagline">
+                  International data-driven retail multi-asset broker; fraud and risk analytics in Partnership (Digital
+                  Affiliates &amp; Revenue share).
+                </p>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Lead Data Analyst <span class="carousel-role-scope">(Risk Protection)</span></h4>
+                  <p class="muted carousel-role-dates">Jan 2025 — Present</p>
+                  <ul class="carousel-slide-list">
+                    <li>Moved from Team Lead to IC; focus on fraud and risk analytics.</li>
+                    <li>
+                      Event-based models for web click fraud, payout anomalies, and stronger multi-accounting detection.
+                    </li>
+                    <li>High-impact work delivering <strong>$2M+</strong> in monthly savings.</li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Partnership Risk Protection Team Lead</h4>
+                  <p class="muted carousel-role-dates">Sep 2023 — Dec 2024</p>
+                  <ul class="carousel-slide-list">
+                    <li>Built and led a team of <strong>7</strong> on abuse detection across Partnership products.</li>
+                    <li>Established <strong>20+</strong> monitoring processes from scratch.</li>
+                    <li>Risk scoring and detection of abusive partners; improved fraud models.</li>
+                    <li>About <strong>$350K+</strong> in monthly savings from stronger detection.</li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Senior Data Analyst <span class="carousel-role-scope">(Risk Protection)</span></h4>
+                  <p class="muted carousel-role-dates">Jun 2022 — Aug 2023</p>
+                  <ul class="carousel-slide-list">
+                    <li>
+                      Anti-fraud models: multi-accounting, CPL, bots, hijacking—fewer false positives, about
+                      <strong>$100K+</strong> monthly savings.
+                    </li>
+                    <li>Monitoring from scratch; investigation time cut about <strong>10×</strong>.</li>
+                    <li>Internal Python frameworks and reporting; about <strong>20+</strong> hours saved weekly.</li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="carousel-slide"
+                role="group"
+                aria-roledescription="slide"
+                aria-hidden="true"
+                data-carousel-slide
+              >
+                <h3>Moscow Exchange</h3>
+                <p class="muted carousel-slide-tagline">Market surveillance: R&amp;D, monitoring leadership, and core analytics.</p>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Market Surveillance R&amp;D Team Lead</h4>
+                  <p class="muted carousel-role-dates">May 2019 — Jun 2022</p>
+                  <ul class="carousel-slide-list">
+                    <li>Hired <strong>3</strong> analysts; built an independent data analytics team.</li>
+                    <li>Agile workflows and guidelines; R&amp;D time-to-market down about <strong>50%</strong>.</li>
+                    <li>Supported <strong>20+</strong> criminal investigations with regulators and market participants.</li>
+                    <li>Co-developed surveillance methodology with regulator/SRO; about <strong>$100K+</strong> broker cost reduction.</li>
+                    <li>
+                      MS models (trading abuse, insider trading, anomalies) at about <strong>70–95%</strong> accuracy.
+                    </li>
+                    <li>NLP (news, support automation) up to <strong>97%</strong> F1; <strong>1000+</strong> hours saved.</li>
+                    <li>Feature engineering and ETL frameworks for scalable model development.</li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">MS Monitoring Team Lead</h4>
+                  <p class="muted carousel-role-dates">Jan 2017 — Apr 2019</p>
+                  <ul class="carousel-slide-list">
+                    <li>Python frameworks for financial data; monitoring and reporting time down about <strong>10×</strong>.</li>
+                    <li>
+                      Analytics culture: <strong>10+</strong> training programs for <strong>100+</strong> employees; community
+                      (<strong>30+</strong> people, <strong>20+</strong> sessions); <strong>20+</strong> investor seminars on
+                      surveillance.
+                    </li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">MS Monitoring Analyst</h4>
+                  <p class="muted carousel-role-dates">Jul 2012 — Dec 2016</p>
+                  <ul class="carousel-slide-list">
+                    <li>End-to-end market surveillance system; manual effort down about <strong>50%</strong>.</li>
+                    <li><strong>20+</strong> fraud rules before full rollout.</li>
+                    <li>Automated reporting and member requests; time down about <strong>90%</strong>.</li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                class="carousel-slide"
+                role="group"
+                aria-roledescription="slide"
+                aria-hidden="true"
+                data-carousel-slide
+              >
+                <h3>Mentoring &amp; extracurricular</h3>
+                <p class="muted carousel-slide-tagline">Teaching and supervision alongside full-time roles.</p>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Bayes Business School</h4>
+                  <p class="muted carousel-role-dates">Industry expert and supervisor · Mar 2025 — Present</p>
+                  <ul class="carousel-slide-list">
+                    <li>
+                      Supervised undergraduate applied research—connecting academic theory with real-world analytics and
+                      finance problems.
+                    </li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Yandex Practicum</h4>
+                  <p class="muted carousel-role-dates">Mentor, Data Analysis track · Jun 2019 — Jun 2021</p>
+                  <ul class="carousel-slide-list">
+                    <li>Supported the pilot course and iterated content for a more effective learning path.</li>
+                    <li>
+                      <strong>50</strong> seminars for <strong>400+</strong> students; strong early employment outcomes for
+                      mentees.
+                    </li>
+                  </ul>
+                </div>
+                <div class="carousel-role">
+                  <h4 class="carousel-role-heading">Plekhanov Russian University of Economics</h4>
+                  <p class="muted carousel-role-dates">Guest lecturer · Jan 2019 — Jun 2022</p>
+                  <ul class="carousel-slide-list">
+                    <li>
+                      <strong>20+</strong> seminars on trading surveillance on the Russian financial market over three years.
+                    </li>
+                    <li>Developed and delivered seminar materials.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-controls">
+            <button type="button" class="carousel-btn" data-carousel-prev aria-label="Previous slide">Previous</button>
+            <div class="carousel-dots" role="tablist" aria-label="Achievement slides">
+              <button
+                type="button"
+                class="carousel-dot"
+                role="tab"
+                data-carousel-dot
+                data-carousel-index="0"
+                aria-label="Show Exness"
+                aria-selected="true"
+              >
+                <span class="sr-only">Exness</span>
+              </button>
+              <button
+                type="button"
+                class="carousel-dot"
+                role="tab"
+                data-carousel-dot
+                data-carousel-index="1"
+                aria-label="Show Moscow Exchange"
+                aria-selected="false"
+              >
+                <span class="sr-only">Moscow Exchange</span>
+              </button>
+              <button
+                type="button"
+                class="carousel-dot"
+                role="tab"
+                data-carousel-dot
+                data-carousel-index="2"
+                aria-label="Show mentoring and extracurricular activities"
+                aria-selected="false"
+              >
+                <span class="sr-only">Mentoring and extracurricular</span>
+              </button>
+            </div>
+            <button type="button" class="carousel-btn" data-carousel-next aria-label="Next slide">Next</button>
+          </div>
+          <p class="carousel-live sr-only" aria-live="polite" data-carousel-live></p>
+        </div>
+      </section>
+
       <section aria-labelledby="stack-heading">
         <h2 id="stack-heading">Stack and Skills</h2>
-        <div class="card">
-          <h3>Programming and Data Analysis</h3>
-          <div class="chips">
+        <div class="card card--stack">
+          <div class="chips chips--stack">
             <span class="chip">Python</span>
             <span class="chip">pandas</span>
             <span class="chip">sklearn</span>
@@ -172,38 +376,18 @@
             <span class="chip">Vertica</span>
             <span class="chip">ClickHouse</span>
             <span class="chip">Trino</span>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Marketing and Web Analytics</h3>
-          <div class="chips">
             <span class="chip">Attribution models</span>
             <span class="chip">AppsFlyer</span>
             <span class="chip">Singular</span>
             <span class="chip">Web events analytics</span>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Data Visualization</h3>
-          <div class="chips">
             <span class="chip">Metabase</span>
             <span class="chip">Grafana</span>
             <span class="chip">Plotly Dash</span>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Infrastructure and Deployment</h3>
-          <div class="chips">
             <span class="chip">Linux</span>
             <span class="chip">Bash</span>
             <span class="chip">Docker</span>
             <span class="chip">CI/CD</span>
             <span class="chip">Git</span>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Other Tools</h3>
-          <div class="chips">
             <span class="chip">Cursor</span>
             <span class="chip">Codex</span>
             <span class="chip">Jira</span>

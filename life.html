@@ -2,6 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Personal page: life, social links, blog, and interests." />
     <meta property="og:title" content="Life | Aleksei Samoilov" />
@@ -14,17 +21,22 @@
     <main class="container">
       <header class="site-header">
         <div class="brand" data-owner-name>Aleksei Samoilov</div>
-        <nav class="nav" aria-label="Main navigation">
-          <a class="active" href="./life.html">Life</a>
-          <a href="./work.html">Work</a>
-          <a href="./balance.html" aria-label="Balance easter egg">Balance</a>
-        </nav>
+        <div class="site-header-end">
+          <nav class="nav" aria-label="Main navigation">
+            <a href="./work.html">Work</a>
+            <a class="active" href="./life.html">Life</a>
+            <a href="./balance.html" aria-label="Balance easter egg">Balance</a>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Go to dark theme">
+            Go Dark
+          </button>
+        </div>
       </header>
 
       <section class="hero card hero-profile">
         <img
           class="avatar"
-          src="./assets/images/avatar-main.png"
+          src="./assets/images/avatar-work.png"
           alt="Portrait of Aleksei Samoilov"
           width="192"
           height="192"

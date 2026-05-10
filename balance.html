@@ -2,6 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="A small easter-egg page about work/life balance." />
     <meta property="og:title" content="Balance | Aleksei Samoilov" />
@@ -14,11 +21,16 @@
     <main class="container">
       <header class="site-header">
         <div class="brand" data-owner-name>Aleksei Samoilov</div>
-        <nav class="nav" aria-label="Main navigation">
-          <a href="./life.html">Life</a>
-          <a href="./work.html">Work</a>
-          <a class="active" href="./balance.html">Balance</a>
-        </nav>
+        <div class="site-header-end">
+          <nav class="nav" aria-label="Main navigation">
+            <a href="./work.html">Work</a>
+            <a href="./life.html">Life</a>
+            <a class="active" href="./balance.html">Balance</a>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Go to dark theme">
+            Go Dark
+          </button>
+        </div>
       </header>
 
       <section class="hero card balance-hero" aria-labelledby="balance-title">
