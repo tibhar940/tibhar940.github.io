@@ -528,13 +528,27 @@ p {
   grid-template-columns: var(--gantt-label-col) 1fr;
   gap: 12px;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .gantt-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   color: var(--text);
   font-size: 0.8rem;
-  line-height: 1.35;
+  line-height: 1.3;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.gantt-label-org {
+  font-weight: 600;
+}
+
+.gantt-label-role {
+  color: var(--muted);
+  font-size: 0.76rem;
 }
 
 .gantt-label a {
@@ -550,7 +564,7 @@ p {
 
 .gantt-track {
   position: relative;
-  height: 30px;
+  height: 36px;
   background: var(--gantt-track-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -558,17 +572,10 @@ p {
 
 .gantt-bar {
   position: absolute;
-  top: 4px;
-  height: 20px;
+  top: 6px;
+  height: 24px;
   border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 8px;
-  white-space: nowrap;
-  font-size: 0.68rem;
-  color: var(--gantt-bar-text);
-  overflow: hidden;
-  text-overflow: ellipsis;
+  cursor: help;
 }
 
 .gantt-bar--work {
@@ -922,6 +929,7 @@ p {
 
   .gantt-row {
     gap: 8px;
+    margin-bottom: 10px;
   }
 
   .gantt-axis-row {
@@ -931,6 +939,20 @@ p {
 
   .gantt-label {
     font-size: 0.72rem;
+    min-height: 40px;
+  }
+
+  .gantt-label-role {
+    font-size: 0.68rem;
+  }
+
+  .gantt-track {
+    height: 32px;
+  }
+
+  .gantt-bar {
+    top: 5px;
+    height: 22px;
   }
 
   .balance-chart {
