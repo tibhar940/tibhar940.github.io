@@ -6,7 +6,7 @@ window.SITE_CONFIG = {
   },
   ownerName: "Aleksei Samoilov",
   role: "Senior Data Analyst",
-  cvUrl: "./assets/docs/cv.pdf",
+  cvUrl: "/assets/docs/cv.pdf",
   socialLinks: [
     { label: "Telegram", url: "https://t.me/tibhar940" },
     { label: "Instagram", url: "https://www.instagram.com/tibhar940" },

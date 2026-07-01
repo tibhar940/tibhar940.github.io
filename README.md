@@ -8,7 +8,7 @@ Minimal personal website for GitHub Pages with three entry points:
 
 ## Project Structure
 
-- `work`, `life`, `balance` - primary pages (extensionless URLs)
+- `work/index.html`, `life/index.html`, `balance/index.html` - primary pages (clean URLs `/work`, `/life`, `/balance`)
 - `work.html`, `life.html`, `balance.html` - redirect stubs for old `.html` links
 - `index.html` - redirects `/` to `/work`
 - `assets/css/main.css` - shared styles
@@ -19,9 +19,9 @@ Minimal personal website for GitHub Pages with three entry points:
 
 Edit page content directly in:
 
-- `work`
-- `life`
-- `balance`
+- `work/index.html`
+- `life/index.html`
+- `balance/index.html`
 
 ## Update CV Link (Google Drive)
 
