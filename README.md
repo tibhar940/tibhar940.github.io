@@ -9,7 +9,6 @@ Minimal personal website for GitHub Pages with three entry points:
 ## Project Structure
 
 - `work/index.html`, `life/index.html`, `balance/index.html` - primary pages (clean URLs `/work`, `/life`, `/balance`)
-- `work.html`, `life.html`, `balance.html` - redirect stubs for old `.html` links
 - `index.html` - redirects `/` to `/work`
 - `assets/css/main.css` - shared styles
 - `assets/js/site.config.js` - editable site data and links
