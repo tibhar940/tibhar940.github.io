@@ -2,11 +2,121 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=/life.html" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting...</title>
+    <meta name="description" content="Personal page: life, social links, blog, and interests." />
+    <meta property="og:title" content="Life | Aleksei Samoilov" />
+    <meta property="og:description" content="Personal profile, links, and interests." />
+    <meta property="og:type" content="website" />
+    <title>Life | Aleksei Samoilov</title>
+    <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <body>
-    <p>Redirecting to <a href="/life.html">/life.html</a>...</p>
+    <main class="container">
+      <header class="site-header">
+        <div class="brand" data-owner-name>Aleksei Samoilov</div>
+        <div class="site-header-end">
+          <nav class="nav" aria-label="Main navigation">
+            <a href="/work">Work</a>
+            <a class="active" href="/life">Life</a>
+            <a href="/balance" aria-label="Balance easter egg">Balance</a>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Go to dark theme">
+            Go Dark
+          </button>
+        </div>
+      </header>
+
+      <section class="hero card hero-profile">
+        <img
+          class="avatar"
+          src="./assets/images/avatar-work.png"
+          alt="Portrait of Aleksei Samoilov"
+          width="192"
+          height="192"
+        />
+        <div>
+          <h1 class="hero-intro-title">Hi, I am <span data-owner-name>Aleksei Samoilov</span>.</h1>
+          <p class="muted">Senior Data Analyst based in Limassol, Cyprus since 2022.</p>
+        </div>
+      </section>
+
+      <section aria-labelledby="about-heading">
+        <h2 id="about-heading">About</h2>
+        <p>
+          I am a <span data-role>Senior Data Analyst</span> from Russia, currently living in Limassol, Cyprus.
+          I focus on making data practical, clear, and useful for decision-making. I live in Cyprus with my wife and our little son.
+        </p>
+        <p>
+          I am a deeply curious person with many interests, and I am always looking for something new to explore.
+          Sport has always been a constant in my life, and right now it is triathlon. Over the years, the number
+          of my hobbies has grown so much that sometimes I do not even know where to start when people ask about them.
+          I am a family-oriented person and happily married since 2014. In January 2026, my wife and I welcomed our son,
+          Petr, so now I am learning to live in a new way and discovering new sides of life.
+        </p>
+        <p>
+          I truly love Cyprus and I am working toward Cypriot citizenship. I try to take an active part in my local
+          community: I am a blood donor, a member of the Cyprus Triathlon Federation, and actively engaged with the
+          island's language and culture. I recently passed Greek at B1 level.
+        </p>
+      </section>
+
+      <section aria-labelledby="social-heading">
+        <h2 id="social-heading">Social Links</h2>
+        <ul class="social-list" data-social-links>
+          <li class="social-item"><a class="social-link" href="https://t.me/tibhar940">Telegram</a></li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="blog-heading">
+        <div class="blog-row">
+          <img
+            class="blog-icon"
+            src="./assets/images/blog-icon.png"
+            alt="Blog icon"
+            width="120"
+            height="120"
+          />
+          <div>
+            <h2 id="blog-heading">Blog</h2>
+            <p>Since 2022, I have been writing a personal blog in Russian.</p>
+            <a class="button" data-blog-link href="https://replace-me.dev" target="_blank" rel="noopener noreferrer">Read Blog</a>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="hobbies-heading">
+        <h2 id="hobbies-heading">Interests</h2>
+        <div class="chips">
+          <span class="chip">Triathlon</span>
+          <span class="chip">Running</span>
+          <span class="chip">Learning Languages</span>
+          <span class="chip">Endurance Sports</span>
+          <span class="chip">DIY</span>
+          <span class="chip">3D printing</span>
+          <span class="chip">Chinese Calligraphy</span>
+          <span class="chip">XC Ski</span>
+          <span class="chip">Books</span>
+        </div>
+      </section>
+
+      <section aria-labelledby="work-link-heading">
+        <h2 id="work-link-heading">Work Side</h2>
+        <p>If you are here for my professional background, start with the work page.</p>
+        <a class="button" href="/work">Go to Work</a>
+      </section>
+
+      <footer class="site-footer">
+        <span>&copy; <span data-current-year></span> <span data-owner-name>Aleksei Samoilov</span></span>
+      </footer>
+    </main>
+    <script src="./assets/js/site.config.js"></script>
+    <script src="./assets/js/main.js"></script>
   </body>
 </html>

@@ -2,11 +2,67 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=/balance.html" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("theme") === "dark") document.documentElement.dataset.theme = "dark";
+        } catch (e) {}
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Redirecting...</title>
+    <meta name="description" content="A small easter-egg page about work/life balance." />
+    <meta property="og:title" content="Balance | Aleksei Samoilov" />
+    <meta property="og:description" content="A tiny easter egg." />
+    <meta property="og:type" content="website" />
+    <title>Balance | Aleksei Samoilov</title>
+    <link rel="stylesheet" href="./assets/css/main.css" />
   </head>
   <body>
-    <p>Redirecting to <a href="/balance.html">/balance.html</a>...</p>
+    <main class="container">
+      <header class="site-header">
+        <div class="brand" data-owner-name>Aleksei Samoilov</div>
+        <div class="site-header-end">
+          <nav class="nav" aria-label="Main navigation">
+            <a href="/work">Work</a>
+            <a href="/life">Life</a>
+            <a class="active" href="/balance">Balance</a>
+          </nav>
+          <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Go to dark theme">
+            Go Dark
+          </button>
+        </div>
+      </header>
+
+      <section class="hero card balance-hero" aria-labelledby="balance-title">
+        <h1 id="balance-title">Work / Life Balance</h1>
+        <p class="muted">My work-life balance based on how I describe myself on this personal site.</p>
+      </section>
+
+      <section aria-labelledby="balance-chart-title">
+        <h2 id="balance-chart-title">Text Volume Split</h2>
+        <div class="balance-chart card" data-balance-chart>
+          <div class="balance-column balance-column--work">
+            <div class="balance-column-title">Work</div>
+            <div class="cube-field cube-field--work" data-cube-field="work"></div>
+            <p class="balance-meta" data-balance-meta="work">Characters: ...</p>
+          </div>
+          <div class="balance-column balance-column--life">
+            <div class="balance-column-title">Life</div>
+            <div class="cube-field cube-field--life" data-cube-field="life"></div>
+            <p class="balance-meta" data-balance-meta="life">Characters: ...</p>
+          </div>
+        </div>
+        <p class="muted balance-ratio" data-balance-ratio>Loading ratio...</p>
+        <p class="muted balance-fallback" data-balance-fallback hidden>
+          Could not auto-read page text in this environment. Open via local server or GitHub Pages to see live ratio.
+        </p>
+      </section>
+
+      <footer class="site-footer">
+        <span>&copy; <span data-current-year></span> <span data-owner-name>Aleksei Samoilov</span></span>
+      </footer>
+    </main>
+    <script src="./assets/js/site.config.js"></script>
+    <script src="./assets/js/main.js"></script>
   </body>
 </html>

@@ -322,12 +322,12 @@
         fallbackNode.hidden = !fromSnapshot;
         if (fromSnapshot) {
           fallbackNode.textContent =
-            "Fetch to work.html / life.html is blocked in this context (common with file://). Showing cubes and ratio from an embedded character snapshot in site.config.js.";
+            "Fetch to /work / /life is blocked in this context (common with file://). Showing cubes and ratio from an embedded character snapshot in site.config.js.";
         }
       }
     }
 
-    Promise.all([fetch("./work.html"), fetch("./life.html")])
+    Promise.all([fetch("/work"), fetch("/life")])
       .then(function (responses) {
         return Promise.all(
           responses.map(function (response) {

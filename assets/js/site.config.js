@@ -1,5 +1,5 @@
 window.SITE_CONFIG = {
-  /** Fallback when fetch("./work.html") fails (e.g. file://). Update if main text on those pages changes a lot. */
+  /** Fallback when fetch("/work") fails (e.g. file://). Update if main text on those pages changes a lot. */
   balanceCharCounts: {
     work: 4558,
     life: 1451
