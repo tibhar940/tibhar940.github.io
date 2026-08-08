@@ -50,7 +50,7 @@
 
   function particleCount() {
     var area = width * height;
-    return Math.max(70, Math.min(180, Math.round(area / 12000)));
+    return Math.max(140, Math.min(360, Math.round(area / 6000)));
   }
 
   function makeParticle() {
