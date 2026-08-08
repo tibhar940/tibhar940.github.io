@@ -20,6 +20,9 @@
   var running = false;
   var lastTs = 0;
   var time = 0;
+  var mouse = { x: -9999, y: -9999, active: false };
+  var REPEL_RADIUS = 120;
+  var REPEL_STRENGTH = 2.8;
 
   var LIGHT_HUES = [195, 168, 145, 32, 12, 210, 85];
   var DARK_HUES = [198, 172, 150, 38, 18, 215, 95];
@@ -138,8 +141,23 @@
       var p = particles[i];
       var angle = flowAngle(p.x, p.y, time * (0.55 + p.layer * 0.45) + p.phase);
       var step = p.speed * (0.55 + p.layer * 0.9) * (dt / 16);
-      p.x += Math.cos(angle) * step + Math.sin(time * p.waveFreq + p.phase) * p.waveAmp * 0.15;
-      p.y += Math.sin(angle) * step * 0.85 + Math.cos(time * (p.waveFreq * 0.8) + p.phase) * p.waveAmp * 0.12;
+      var dx = Math.cos(angle) * step + Math.sin(time * p.waveFreq + p.phase) * p.waveAmp * 0.15;
+      var dy = Math.sin(angle) * step * 0.85 + Math.cos(time * (p.waveFreq * 0.8) + p.phase) * p.waveAmp * 0.12;
+
+      if (mouse.active) {
+        var mx = p.x - mouse.x;
+        var my = p.y - mouse.y;
+        var dist = Math.sqrt(mx * mx + my * my);
+        if (dist < REPEL_RADIUS && dist > 0.001) {
+          var force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH * (dt / 16);
+          force *= 0.7 + p.layer * 0.6;
+          dx += (mx / dist) * force;
+          dy += (my / dist) * force;
+        }
+      }
+
+      p.x += dx;
+      p.y += dy;
 
       if (p.x < -8) p.x = width + 8;
       if (p.x > width + 8) p.x = -8;
@@ -202,6 +220,17 @@
     seed();
     ctx.fillStyle = solidBg();
     ctx.fillRect(0, 0, width, height);
+  });
+  window.addEventListener("pointermove", function (event) {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+    mouse.active = true;
+  });
+  window.addEventListener("pointerleave", function () {
+    mouse.active = false;
+  });
+  window.addEventListener("blur", function () {
+    mouse.active = false;
   });
   document.addEventListener("visibilitychange", onVisibility);
   reducedMotion.addEventListener("change", function () {
