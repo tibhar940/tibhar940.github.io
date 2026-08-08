@@ -13,38 +13,32 @@
   var dpr = 1;
   var width = 0;
   var height = 0;
-  var fractals = [];
-  var sparks = [];
-  var nextSparkAt = 0;
+  var particles = [];
+  var flashes = [];
+  var nextFlashAt = 0;
   var rafId = 0;
   var running = false;
   var lastTs = 0;
+  var time = 0;
+
+  var LIGHT_HUES = [195, 168, 145, 32, 12, 210, 85];
+  var DARK_HUES = [198, 172, 150, 38, 18, 215, 95];
 
   function isDark() {
     return document.documentElement.dataset.theme === "dark";
   }
 
-  function palette() {
-    if (isDark()) {
-      return {
-        clear: "#0a0c0f",
-        stroke: "rgba(143, 179, 255, 0.16)",
-        strokeSoft: "rgba(190, 210, 240, 0.08)",
-        spark: "rgba(230, 240, 255, 0.95)",
-        sparkGlow: "rgba(160, 195, 255, 0.45)"
-      };
-    }
-    return {
-      clear: "#f2f4f8",
-      stroke: "rgba(58, 95, 191, 0.13)",
-      strokeSoft: "rgba(58, 95, 191, 0.06)",
-      spark: "rgba(255, 255, 255, 0.95)",
-      sparkGlow: "rgba(90, 130, 210, 0.4)"
-    };
+  function bgColor(alpha) {
+    if (isDark()) return "rgba(10, 12, 15, " + alpha + ")";
+    return "rgba(242, 244, 248, " + alpha + ")";
+  }
+
+  function solidBg() {
+    return isDark() ? "#0a0c0f" : "#f2f4f8";
   }
 
   function resize() {
-    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    dpr = Math.min(window.devicePixelRatio || 1, 1.75);
     width = window.innerWidth;
     height = window.innerHeight;
     canvas.width = Math.floor(width * dpr);
@@ -54,99 +48,76 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
-  function createFractal(i) {
-    var side = i % 2 === 0 ? -1 : 1;
+  function particleCount() {
+    var area = width * height;
+    return Math.max(70, Math.min(180, Math.round(area / 12000)));
+  }
+
+  function makeParticle() {
+    var hues = isDark() ? DARK_HUES : LIGHT_HUES;
+    var hue = hues[Math.floor(Math.random() * hues.length)];
+    var sat = isDark() ? 45 + Math.random() * 30 : 40 + Math.random() * 35;
+    var light = isDark() ? 55 + Math.random() * 25 : 42 + Math.random() * 22;
     return {
-      x: width * (0.15 + Math.random() * 0.7),
-      y: height * (0.12 + Math.random() * 0.76),
-      size: Math.min(width, height) * (0.08 + Math.random() * 0.12),
-      angle: Math.random() * Math.PI * 2,
-      spin: side * (0.00012 + Math.random() * 0.00018),
-      driftX: side * (0.008 + Math.random() * 0.018),
-      driftY: (Math.random() - 0.5) * 0.02,
-      depth: 4 + Math.floor(Math.random() * 2),
-      branch: 0.58 + Math.random() * 0.12,
-      spread: 0.42 + Math.random() * 0.28,
-      phase: Math.random() * Math.PI * 2
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: 0.7 + Math.random() * 2.1,
+      hue: hue,
+      sat: sat,
+      light: light,
+      alpha: isDark() ? 0.28 + Math.random() * 0.42 : 0.22 + Math.random() * 0.38,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.25 + Math.random() * 0.7,
+      waveAmp: 0.35 + Math.random() * 1.1,
+      waveFreq: 0.4 + Math.random() * 1.4,
+      layer: Math.random(),
+      twinkle: Math.random() * Math.PI * 2
     };
   }
 
   function seed() {
-    var count = width < 720 ? 3 : 5;
-    fractals = [];
-    for (var i = 0; i < count; i++) fractals.push(createFractal(i));
-    sparks = [];
-    nextSparkAt = performance.now() + 1800 + Math.random() * 3200;
+    particles = [];
+    var n = particleCount();
+    for (var i = 0; i < n; i++) particles.push(makeParticle());
+    flashes = [];
+    nextFlashAt = performance.now() + 1200 + Math.random() * 2400;
   }
 
-  function drawBranch(x, y, len, angle, depth, colors) {
-    if (depth <= 0 || len < 2.5) return;
-    var x2 = x + Math.cos(angle) * len;
-    var y2 = y + Math.sin(angle) * len;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x2, y2);
-    ctx.strokeStyle = depth > 2 ? colors.stroke : colors.strokeSoft;
-    ctx.lineWidth = Math.max(0.4, depth * 0.35);
-    ctx.stroke();
-
-    var next = len * (0.62 + 0.04 * Math.sin(angle + depth));
-    drawBranch(x2, y2, next, angle - 0.55, depth - 1, colors);
-    drawBranch(x2, y2, next, angle + 0.55, depth - 1, colors);
-    if (depth > 2) {
-      drawBranch(x2, y2, next * 0.72, angle, depth - 2, colors);
-    }
+  function flowAngle(x, y, t) {
+    var nx = x / Math.max(width, 1);
+    var ny = y / Math.max(height, 1);
+    return (
+      Math.sin((nx * 3.1 + t * 0.18) * Math.PI) * 0.9 +
+      Math.cos((ny * 2.4 - t * 0.14) * Math.PI) * 0.7 +
+      Math.sin((nx + ny) * 2.6 + t * 0.22) * 0.55 +
+      Math.sin(t * 0.11 + nx * 6.0) * 0.35
+    );
   }
 
-  function drawFractal(f, t, colors) {
-    var breathe = 1 + Math.sin(t * 0.00035 + f.phase) * 0.06;
-    var size = f.size * breathe;
-    ctx.save();
-    ctx.translate(f.x, f.y);
-    ctx.rotate(f.angle);
-    ctx.globalAlpha = 0.85;
-    for (var i = 0; i < 6; i++) {
-      ctx.rotate((Math.PI * 2) / 6);
-      drawBranch(0, 0, size * f.branch, -Math.PI / 2, f.depth, colors);
-      drawBranch(0, 0, size * f.branch * 0.7, -Math.PI / 2 + f.spread, f.depth - 1, colors);
-    }
-    ctx.restore();
-  }
-
-  function spawnSpark(now) {
-    sparks.push({
+  function spawnFlash(now) {
+    flashes.push({
       x: Math.random() * width,
       y: Math.random() * height,
       born: now,
-      life: 700 + Math.random() * 900,
-      size: 1.2 + Math.random() * 2.4,
-      rays: 4 + Math.floor(Math.random() * 3)
+      life: 500 + Math.random() * 700,
+      size: 1.4 + Math.random() * 2.6
     });
-    nextSparkAt = now + 2200 + Math.random() * 5500;
+    nextFlashAt = now + 1600 + Math.random() * 4200;
   }
 
-  function drawSpark(s, now, colors) {
-    var age = (now - s.born) / s.life;
+  function drawFlash(f, now) {
+    var age = (now - f.born) / f.life;
     if (age >= 1) return false;
-    var fade = age < 0.2 ? age / 0.2 : age > 0.7 ? (1 - age) / 0.3 : 1;
-    var r = s.size * (0.7 + fade * 0.8);
+    var fade = age < 0.18 ? age / 0.18 : age > 0.65 ? (1 - age) / 0.35 : 1;
+    var r = f.size * (0.8 + fade);
     ctx.save();
-    ctx.translate(s.x, s.y);
-    ctx.globalAlpha = fade * 0.9;
-    ctx.fillStyle = colors.sparkGlow;
+    ctx.translate(f.x, f.y);
+    ctx.globalAlpha = fade * (isDark() ? 0.85 : 0.7);
+    ctx.fillStyle = isDark() ? "rgba(220, 235, 255, 0.55)" : "rgba(255, 255, 255, 0.75)";
     ctx.beginPath();
-    ctx.arc(0, 0, r * 2.8, 0, Math.PI * 2);
+    ctx.arc(0, 0, r * 2.4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = colors.spark;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (var i = 0; i < s.rays; i++) {
-      var a = (i / s.rays) * Math.PI * 2;
-      ctx.moveTo(Math.cos(a) * r * 0.2, Math.sin(a) * r * 0.2);
-      ctx.lineTo(Math.cos(a) * r * 2.4, Math.sin(a) * r * 2.4);
-    }
-    ctx.stroke();
-    ctx.fillStyle = colors.spark;
+    ctx.fillStyle = isDark() ? "#eef5ff" : "#ffffff";
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.55, 0, Math.PI * 2);
     ctx.fill();
@@ -156,32 +127,48 @@
 
   function tick(now) {
     if (!running) return;
-    var dt = lastTs ? Math.min(32, now - lastTs) : 16;
+    var dt = lastTs ? Math.min(34, now - lastTs) : 16;
     lastTs = now;
-    var colors = palette();
+    time += dt * 0.001;
 
-    ctx.fillStyle = colors.clear;
+    ctx.fillStyle = bgColor(0.18);
     ctx.fillRect(0, 0, width, height);
 
-    for (var i = 0; i < fractals.length; i++) {
-      var f = fractals[i];
-      f.angle += f.spin * dt;
-      f.x += f.driftX * (dt / 16);
-      f.y += f.driftY * (dt / 16) + Math.sin(now * 0.0004 + f.phase) * 0.04;
-      if (f.x < -f.size) f.x = width + f.size;
-      if (f.x > width + f.size) f.x = -f.size;
-      if (f.y < -f.size) f.y = height + f.size;
-      if (f.y > height + f.size) f.y = -f.size;
-      drawFractal(f, now, colors);
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var angle = flowAngle(p.x, p.y, time * (0.55 + p.layer * 0.45) + p.phase);
+      var step = p.speed * (0.55 + p.layer * 0.9) * (dt / 16);
+      p.x += Math.cos(angle) * step + Math.sin(time * p.waveFreq + p.phase) * p.waveAmp * 0.15;
+      p.y += Math.sin(angle) * step * 0.85 + Math.cos(time * (p.waveFreq * 0.8) + p.phase) * p.waveAmp * 0.12;
+
+      if (p.x < -8) p.x = width + 8;
+      if (p.x > width + 8) p.x = -8;
+      if (p.y < -8) p.y = height + 8;
+      if (p.y > height + 8) p.y = -8;
+
+      var twinkle = 0.65 + 0.35 * Math.sin(time * 2.2 + p.twinkle);
+      var alpha = p.alpha * twinkle;
+      var glow = p.r * (1.8 + p.layer);
+
+      ctx.beginPath();
+      ctx.fillStyle =
+        "hsla(" + p.hue + ", " + p.sat + "%, " + p.light + "%, " + alpha * 0.28 + ")";
+      ctx.arc(p.x, p.y, glow, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.fillStyle =
+        "hsla(" + p.hue + ", " + Math.min(100, p.sat + 8) + "%, " + Math.min(92, p.light + 8) + "%, " + alpha + ")";
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
     }
 
-    if (now >= nextSparkAt) spawnSpark(now);
-
+    if (now >= nextFlashAt) spawnFlash(now);
     var alive = [];
-    for (var j = 0; j < sparks.length; j++) {
-      if (drawSpark(sparks[j], now, colors)) alive.push(sparks[j]);
+    for (var j = 0; j < flashes.length; j++) {
+      if (drawFlash(flashes[j], now)) alive.push(flashes[j]);
     }
-    sparks = alive;
+    flashes = alive;
 
     rafId = requestAnimationFrame(tick);
   }
@@ -190,6 +177,8 @@
     if (running || reducedMotion.matches) return;
     running = true;
     lastTs = 0;
+    ctx.fillStyle = solidBg();
+    ctx.fillRect(0, 0, width, height);
     rafId = requestAnimationFrame(tick);
   }
 
@@ -211,6 +200,8 @@
   window.addEventListener("resize", function () {
     resize();
     seed();
+    ctx.fillStyle = solidBg();
+    ctx.fillRect(0, 0, width, height);
   });
   document.addEventListener("visibilitychange", onVisibility);
   reducedMotion.addEventListener("change", function () {
@@ -222,5 +213,15 @@
       seed();
       start();
     }
+  });
+
+  var themeObserver = new MutationObserver(function () {
+    seed();
+    ctx.fillStyle = solidBg();
+    ctx.fillRect(0, 0, width, height);
+  });
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"]
   });
 })();
