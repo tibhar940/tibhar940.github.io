@@ -13,6 +13,7 @@ Minimal personal website for GitHub Pages with three entry points:
 - `assets/css/main.css` - shared styles
 - `assets/js/site.config.js` - editable site data and links
 - `assets/js/main.js` - config injection logic
+- `assets/js/ambient-bg.js` - subtle fractal background animation
 
 ## Update Content
 
